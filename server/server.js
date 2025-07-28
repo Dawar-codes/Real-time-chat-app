@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3001;
 
 const io = new Server(server, {
   cors: {
-    origin: "*", // Replace * with your actual frontend domain in production
+    origin: "https://real-time-chat-app-pi-two.vercel.app/", // Replace * with your actual frontend domain in production
   },
 });
 
