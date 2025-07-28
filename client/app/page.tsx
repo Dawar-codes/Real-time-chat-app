@@ -6,7 +6,7 @@ import { UserType } from "@/models/user";
 import { MessageProps } from "@/components/Messages/Message";
 
 // Initialize the socket connection
-const socket = io("http://192.168.100.135:3001", {
+const socket = io("https://real-time-chat-app-b00l.onrender.com", {
   transports: ["websocket"],
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
