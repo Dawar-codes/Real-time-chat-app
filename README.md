@@ -13,10 +13,6 @@ Real-Time-Chat-App/
 ├── client/ # Next.js (TypeScript) frontend
 └── server/ # Node.js + Socket.IO backend
 
-yaml
-Copy
-Edit
-
 ---
 
 ## 🚀 Features
@@ -87,10 +83,6 @@ Contributions are welcome! Feel free to fork the repo and open a pull request.
 
 📬 Contact
 Built by @Dawar-codes — feel free to connect!
-
-yaml
-Copy
-Edit
 
 ---
 
