@@ -13,6 +13,13 @@ const io = new Server(server, {
     origin: "https://real-time-chat-app-pi-two.vercel.app/", // Replace * with your actual frontend domain in production
   },
 });
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:3000", // Replace * with your actual frontend domain in production
+//   },
+// });
+
+const users = new Map();
 
 io.on("connection", (socket) => {
   console.log("A user connected");
@@ -26,11 +33,19 @@ io.on("connection", (socket) => {
   });
 
   socket.on("new_user", (data) => {
+    users.set(socket.id, data.user);          // <-- Save the username
     socket.broadcast.emit("new_user", data.user);
   });
 
   socket.on("disconnect", () => {
-    console.log("A user disconnected");
+    const username = users.get(socket.id);
+    console.log(username);
+    
+    if (username) {
+      socket.broadcast.emit("user_left", username);
+      users.delete(socket.id);
+      console.log(`${username} disconnected`);
+    }
   });
 });
 

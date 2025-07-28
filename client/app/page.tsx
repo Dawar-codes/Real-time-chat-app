@@ -12,35 +12,56 @@ const socket = io("https://real-time-chat-app-b00l.onrender.com", {
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
 });
+// const socket = io("http://localhost:3001", {
+//   transports: ["websocket"],
+//   reconnectionAttempts: 5,
+//   reconnectionDelay: 1000,
+//   reconnectionDelayMax: 5000,
+// });
 
 export default function Home() {
   const [chat, setChat] = useState<MessageProps[]>([]);
   const [typing, setTyping] = useState<string[]>([]);
   const [input, setInput] = useState("");
   // const user = useRef<object>(null);
-    const [user, setUser] = useState<UserType | null>(null); // <--- now use useState, not ref!
+  const [user, setUser] = useState<UserType | null>(null); // <--- now use useState, not ref!
 
   useEffect(() => {
     socket.on("receive_message", (msg) => {
       setChat((prev) => [...prev, msg]);
-    })
+    });
 
     socket.on("user_typing", (data) => {
-      if(!user) return;
+      if (!user) return;
       setTyping((prev) => {
-        if(typing.includes(data.user) && data.typing === true) return prev
-        if(data.typing === false) {
-          return prev.filter((u) => u !== data.user)
+        if (typing.includes(data.user) && data.typing === true) return prev;
+        if (data.typing === false) {
+          return prev.filter((u) => u !== data.user);
         } else {
-          return [...prev, data.user]
+          return [...prev, data.user];
         }
-      })
-    })
+      });
+    });
 
     socket.on("new_user", (newUser: string) => {
       setChat((prev) => [
         ...prev,
-        { content: `${newUser} joined`, type: "server", user: { id: "", name: newUser } }
+        {
+          content: `${newUser} joined`,
+          type: "server",
+          user: { id: "", name: newUser },
+        },
+      ]);
+    });
+
+    socket.on("user_left", (leftUser: string) => {
+      setChat((prev) => [
+        ...prev,
+        {
+          content: `${leftUser} left the chat`,
+          type: "server",
+          user: { id: "", name: leftUser },
+        },
       ]);
     });
 
@@ -48,9 +69,9 @@ export default function Home() {
       socket.off("receive_message");
       socket.off("new_user");
       socket.off("user_typing");
-    }
-  }) 
-  
+      socket.off("user_left");
+    };
+  });
 
   return (
     <div
@@ -70,7 +91,12 @@ export default function Home() {
             <Inputs setChat={setChat} user={user} socket={socket} />
           </>
         ) : (
-          <SignUp setUser={setUser} socket={socket} input={input} setInput={setInput} />
+          <SignUp
+            setUser={setUser}
+            socket={socket}
+            input={input}
+            setInput={setInput}
+          />
         )}
       </div>
     </div>
